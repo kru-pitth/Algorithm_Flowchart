@@ -196,8 +196,13 @@ let fs=64;do{x.font=`700 ${fs}px Itim,Mali,sans-serif`;fs-=2}while(x.measureText
 x.font='700 44px Mali,sans-serif';x.fillText(`ชั้น ${S.cls}      เลขที่ ${S.no}`,W/2,550);
 x.fillStyle=ink;x.fillRect(330,600,540,150);x.fillStyle='#fff0a8';x.fillRect(338,608,524,134);
 x.fillStyle=ink;x.font='700 32px Mali,sans-serif';x.fillText('คะแนนที่ได้รับ',W/2,634);x.fillStyle='#ff5c9e';x.font='700 76px Itim,Mali,sans-serif';x.fillText(`${tot} / 500`,W/2,692);
-try{const b=await new Promise(r=>c.toBlob(r,'image/png'));const d=await claude.use('downloads');if(!d){modal('ดาวน์โหลดไม่ได้','หน้านี้ยังไม่รองรับการดาวน์โหลด ลองแคปหน้าจอแทนนะ');return}
-await d.save({filename:`แบบประเมินผล_${S.name}_${S.cls.replace(/[\/\\]/g,'-')}_เลขที่${S.no}.png`,data:b});fx.ok()}
-catch(e){if(e&&e.code!=='declined')modal('ดาวน์โหลดไม่สำเร็จ','ลองใหม่อีกครั้ง หรือแคปหน้าจอแทน')}}
+try{
+const b=await new Promise(r=>c.toBlob(r,'image/png'));
+const fn=`แบบประเมินผล_${S.name}_${S.cls}_เลขที่${S.no}.png`.replace(/[\\/:*?"<>|]/g,'-');
+const u=URL.createObjectURL(b),a=document.createElement('a');
+a.href=u;a.download=fn;document.body.appendChild(a);a.click();a.remove();
+setTimeout(()=>URL.revokeObjectURL(u),1500);
+fx.ok();
+}catch(e){modal('ดาวน์โหลดไม่สำเร็จ','ลองใหม่อีกครั้ง หรือแคปหน้าจอแทน')}}
 title();
 </script></body></html>
