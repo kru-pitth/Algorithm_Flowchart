@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Flowchart Quest</title>
+<link href="https://fonts.googleapis.com/css2?family=Itim&family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#160c33;--p:#2b1a66;--p2:#3d2a8f;--ink:#fff;--gold:#ffd23f;--ok:#4ade80;--bad:#ff5e5e;--cy:#5ee1ff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%}
+body{background:var(--bg) radial-gradient(#ffffff22 1px,transparent 1px) 0 0/28px 28px;color:var(--ink);font-family:'Sarabun','Noto Sans Thai',system-ui,sans-serif;font-size:16px;line-height:1.5}
+h1,h2,h3{font-family:'Press Start 2P','Sarabun',monospace;line-height:1.5;margin:.4em 0}
+h1{font-size:clamp(18px,4.5vw,30px);color:var(--gold);text-shadow:3px 3px #000}h2{font-size:clamp(13px,3vw,18px);color:var(--cy)}h3{font-size:12px;color:var(--gold)}
+#app{max-width:980px;margin:0 auto;padding:14px}
+.box{background:var(--p);border:4px solid #fff;box-shadow:6px 6px 0 #000;padding:16px;margin:12px 0}
+.btn{font:700 16px 'Sarabun',sans-serif;background:var(--gold);color:#222;border:4px solid #000;box-shadow:0 5px 0 #a87d00;padding:10px 20px;cursor:pointer;margin:6px 4px}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #a87d00}.btn.g{background:#ccc;box-shadow:0 5px 0 #888}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.px{image-rendering:pixelated;image-rendering:crisp-edges}
+.center{text-align:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.card{background:var(--p2);border:3px solid #000;outline:3px solid #fff;padding:10px;text-align:center}
+.card svg{width:150px;height:90px}.card .ex{background:#0d0624;border:2px dashed var(--cy);padding:4px 8px;margin-top:6px;color:var(--cy);font-family:monospace}
+input[type=text]{font:16px 'Sarabun';padding:8px;border:3px solid #000;width:100%;margin:2px 0 8px}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>div{flex:1;min-width:140px}
+.av{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.av button{background:var(--p2);color:#fff;border:4px solid #000;padding:8px;cursor:pointer;font:700 15px 'Sarabun';width:120px}
+.av button.on{border-color:var(--gold);background:#5a3fd0;box-shadow:0 0 0 3px var(--gold)}
+.hud{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between}
+.bar{flex:1;min-width:120px;height:18px;background:#000;border:3px solid #fff}.bar i{display:block;height:100%;background:var(--ok);transition:width .3s}
+.stage{display:flex;gap:14px;flex-wrap:wrap}
+.scene{flex:1 1 220px;background:linear-gradient(#5ec7ff 0 60%,#4aa84a 60%);border:4px solid #000;padding:10px;text-align:center;min-height:150px}
+.scene .big{font-size:48px;filter:contrast(1.3) saturate(1.4)}
+.flow{display:flex;flex-direction:column;align-items:center;gap:0;background:#0d0624;border:4px solid #000;padding:12px;margin:10px 0}
+.fr{display:flex;gap:30px;justify-content:center}.ar{color:var(--gold);font-size:20px;line-height:20px;height:22px}
+.cell{display:flex;flex-direction:column;align-items:center}.cap{font-size:13px;color:var(--gold);font-weight:700}
+.slot{position:relative;width:170px;height:80px;border:3px dashed #8c7bd8;display:flex;align-items:center;justify-content:center;text-align:center;font-size:13px;padding:6px;cursor:pointer;color:#cfc6ff}
+.slot.over{border-color:var(--gold);background:#ffffff18}.slot.f{border:0;padding:0}
+.slot svg{position:absolute;inset:0;width:100%;height:100%}.slot .t{position:relative;color:#16213e;font-weight:700;font-size:13px;padding:0 24px}
+.slot.w svg *{stroke:var(--bad)}
+.pal{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.pi{background:var(--p2);border:3px solid #000;padding:4px 6px;width:104px;text-align:center;cursor:grab;font-size:12px;user-select:none}
+.pi svg{width:80px;height:48px}.pi.on{outline:4px solid var(--gold)}
+.modal{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;z-index:9;padding:16px}
+.modal .box{max-width:460px;text-align:center}
+table{width:100%;border-collapse:collapse}td,th{border:2px solid #000;padding:6px;background:var(--p2)}
+#mute{position:fixed;right:10px;top:calc(8px + env(safe-area-inset-top,0px));z-index:5;padding:4px 10px;margin:0}
+.star{color:var(--gold);font-size:34px}
+</style>
+<style>
+:root{--bg:#bfe9ff;--p:#fffaf0;--p2:#ffe9f3;--ink:#3a2a63;--gold:#ff8fb8;--ok:#2fbf71;--bad:#ff5a6e;--cy:#7a5cff}
+body{background:linear-gradient(#9fdcff,#d9c9ff 70%,#ffd9ec);background-attachment:fixed;color:var(--ink);font-family:'Mali','Sarabun',sans-serif;font-size:17px;line-height:1.65}
+h1,h2,h3{font-family:'Itim','Mali',sans-serif;letter-spacing:.3px}
+h1{font-size:clamp(30px,7vw,52px);color:#ff5c9e;text-shadow:3px 3px 0 #fff,5px 5px 0 #3a2a63}h2{font-size:clamp(22px,4.5vw,30px);color:#6a4cff}h3{font-size:20px;color:#e0508f}
+.box{background:var(--p);border:4px solid #3a2a63;border-radius:14px;box-shadow:0 6px 0 #3a2a63}
+.btn{font-family:'Itim','Mali',sans-serif;font-size:19px;background:linear-gradient(#7ef0b5,#3fd68a);color:#14502f;border:3px solid #3a2a63;border-radius:12px;box-shadow:0 5px 0 #2a8f5c}
+.btn.g{background:linear-gradient(#fff,#e4dcff);color:#3a2a63;box-shadow:0 5px 0 #a99be0}
+.card{border:3px solid #3a2a63;outline:0;border-radius:14px;box-shadow:0 4px 0 #3a2a63;background:#fff}
+.card:nth-child(7n+1){background:#ffe9f3}.card:nth-child(7n+2){background:#e7f6ff}.card:nth-child(7n+3){background:#fff3d6}.card:nth-child(7n+4){background:#e9ffe9}.card:nth-child(7n+5){background:#efe6ff}.card:nth-child(7n+6){background:#ffe8dd}.card:nth-child(7n+7){background:#e2fff6}
+.card:hover{transform:translateY(-3px)}.card .ex{background:#fff;color:#6a4cff;border:2px dashed #b9a8ff;border-radius:10px}
+input[type=text]{font-family:'Mali';border:3px solid #3a2a63;border-radius:10px;background:#fff;color:#3a2a63}
+.av{gap:12px}.av button{background:#fff;color:#3a2a63;border:3px solid #3a2a63;border-radius:14px;width:128px;box-shadow:0 4px 0 #3a2a63;font-family:'Itim','Mali',sans-serif;font-size:17px}
+.av button.on{background:#fff0a8;border-color:#ff5c9e;box-shadow:0 4px 0 #ff5c9e}.av button .sk{font-size:13px;display:block;color:#7a6ab0;font-family:'Mali'}
+.bar{background:#fff;border:3px solid #3a2a63;border-radius:12px;overflow:hidden}.bar i{background:linear-gradient(#7ef0b5,#2fbf71)}
+.scene{position:relative;overflow:hidden;border:4px solid #3a2a63;border-radius:12px;background:linear-gradient(#8fdcff 0 62%,#7fd66a 62% 78%,#5fb94f 78%)}
+.scene::before{content:'';position:absolute;left:14px;top:14px;width:8px;height:8px;background:#fff;box-shadow:8px 0 #fff,16px 0 #fff,24px 0 #fff,-8px 8px #fff,0 8px #fff,8px 8px #fff,16px 8px #fff,24px 8px #fff,32px 8px #fff,8px -8px #fff,16px -8px #fff}
+.scene::after{content:'';position:absolute;right:16px;top:12px;width:20px;height:20px;background:#ffe14d;box-shadow:0 0 0 4px #fff3a0}
+.scene>*{position:relative;z-index:1}.scene .big{font-size:44px;margin-top:20px}
+.flow{background:#fff;background-image:linear-gradient(#e6defa 1px,transparent 1px),linear-gradient(90deg,#e6defa 1px,transparent 1px);background-size:20px 20px;border:4px solid #3a2a63;border-radius:12px}
+.ar{color:#ff5c9e}.cap{color:#e0508f;font-size:15px}
+.slot{border:3px dashed #a99be0;border-radius:12px;color:#7a6ab0;background:#faf7ff;font-size:14px}.slot.over{border-color:#ff5c9e;background:#ffe9f3}
+.slot .t{font-weight:600;font-size:14px}.slot.w svg *{stroke:var(--bad);fill:#ffe0e4}
+.pi{background:#fff;border:3px solid #3a2a63;border-radius:12px;box-shadow:0 4px 0 #3a2a63;font-size:13px}.pi.on{outline:4px solid #ff5c9e}.pi:hover{background:#fff0a8}
+.modal{background:#3a2a63cc}table td,table th{background:#fff;border:2px solid #3a2a63}table th{background:#ffd9ec}
+.star{color:#ffb800;text-shadow:2px 2px 0 #3a2a63}#mute{font-size:18px}
+.card .ex,.card .ex b,.card .ex small{font-family:'Mali','Sarabun',sans-serif}.card .ex{font-size:16px}.card small{font-size:14px}
+.bob{animation:bob 1s steps(2) infinite}@keyframes bob{50%{transform:translateY(-4px)}}
+@media(prefers-reduced-motion:reduce){.bob{animation:none}}
+</style></head><body>
+<button class="btn g" id="mute" onclick="mt()">🔊</button>
+<div id="app"></div>
+<script>
+const $=s=>document.querySelector(s),app=$('#app');
+/* ---------- sound ---------- */
+let AC,muted=false;
+function snd(f,d=.1,ty='square',t0=0,v=.07){if(muted)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime+t0;o.type=ty;o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d)}catch(e){}}
+const fx={click:()=>snd(660,.06),drop:()=>{snd(440,.07);snd(700,.08,'square',.07)},ok:()=>[523,659,784,1047].forEach((f,i)=>snd(f,.15,'square',i*.1)),bad:()=>{snd(190,.25,'sawtooth');snd(120,.3,'sawtooth',.15)},win:()=>[523,523,523,659,784,659,784,1047].forEach((f,i)=>snd(f,.18,'square',i*.12))};
+function mt(){muted=!muted;$('#mute').textContent=muted?'🔇':'🔊'}
+/* ---------- symbols ---------- */
+const SY={
+term:{n:'Terminator',th:'จุดเริ่มต้น / จุดสิ้นสุด',f:'จุดเริ่มต้น และ สิ้นสุด',ex:'เริ่มต้น  |  สิ้นสุด',p:'<rect x="4" y="8" width="92" height="44" rx="22"/>'},
+io:{n:'Input / Output',th:'รับข้อมูลเข้า / ส่งข้อมูลออก',f:'รับค่าข้อมูล หรือ ส่งออกข้อมูล',ex:'รับค่า a, b  |  รับชื่อ',p:'<polygon points="20,8 97,8 80,52 3,52"/>'},
+proc:{n:'Process',th:'การประมวลผล / การดำเนินการ',f:'การคำนวณ หรือ การกระทำ',ex:'sum = a + b  |  แปรงฟัน',p:'<rect x="4" y="8" width="92" height="44"/>'},
+dec:{n:'Decision',th:'การตัดสินใจ (ใช่ / ไม่ใช่)',f:'ตรวจเงื่อนไข เพื่อกำหนดเส้นทาง',ex:'score ≥ 50 ?  |  ฝนตกไหม ?',p:'<polygon points="50,3 97,30 50,57 3,30"/>'},
+disp:{n:'Display',th:'การแสดงผลทางหน้าจอ',f:'แสดงผลลัพธ์ออกทางหน้าจอ',ex:'แสดงผล: ผ่าน  |  แสดง sum',p:'<path d="M4,30 Q12,8 36,8 H78 Q96,19 96,30 Q96,41 78,52 H36 Q12,52 4,30Z"/>'},
+conn:{n:'Connector',th:'จุดเชื่อมต่อ',f:'เชื่อมเส้นทาง 2 เส้นเข้าด้วยกัน (แบบทางเลือก)',ex:'ก  |  A',p:'<circle cx="50" cy="30" r="26"/>'},
+arrow:{n:'Flow Line / Arrow',th:'ลูกศรทิศทางการไหล',f:'ทิศทางการไหลของข้อมูล หรือ การทำงาน',ex:'→ (ไปข้างหน้า)  |  ↓ (ลงล่าง)',p:'<polygon points="4,18 62,18 62,4 96,30 62,56 62,42 4,42"/>'}};
+const sv=(t,txt='')=>`<svg viewBox="0 0 100 60" preserveAspectRatio="none" fill="#e6e9ff" stroke="#4a7de8" stroke-width="3" vector-effect="non-scaling-stroke">${SY[t].p}</svg>`;
+/* ---------- avatars ---------- */
+const CL_OLD=[{k:'นักรบ',e:'⚔️',H:'#9aa5b1',B:'#d9381e',W:'#ffd23f'},{k:'จอมเวทย์',e:'🔮',H:'#7b3fe4',B:'#5b2fb0',W:'#4fd1ff'},{k:'นักธนู',e:'🏹',H:'#2f9e44',B:'#3c7a3c',W:'#c2773a'},{k:'นักบวช',e:'✨',H:'#f5f5f5',B:'#f4e285',W:'#ff7ab8'}];
+const SP_OLD=["..HHHH..",".HHHHHH.",".SSSSSS.",".SESSES.",".SSSSSS.","WWBBBB..","WBBBBBB.","W.BBBB..","..BBBB..","..L..L.."];
+function spr_old(i,z=6){const c=document.createElement('canvas');c.width=8;c.height=10;const x=c.getContext('2d'),k=CL[i],m={H:k.H,B:k.B,W:k.W,S:'#f2c28f',E:'#222',L:'#4a3a2a'};SP.forEach((r,y)=>[...r].forEach((ch,xx)=>{if(m[ch]){x.fillStyle=m[ch];x.fillRect(xx,y,1,1)}}));return`<img class="px" width="${8*z}" height="${10*z}" src="${c.toDataURL()}">`}
+/* ---------- avatars v2 (16x16) ---------- */
+const BASE=['................','.....oooooo.....','....oHHHHHHo....','...oHHhhHHHHo...','...oHHHHHHHHo...','...oSSSSSSSSo...','...oSESSSSESo...','...oSPSSSSPSo...','....oSSssSSSo...','.....oooooo.....','...oBBBBBBBBo...','..oSoBbBBbBoSo..','..WoBBBBBBBBo...','..W.oBBBBBBo....','....oLLooLLo....','....ooo..ooo....'];
+const CL=[
+{k:'นักรบ',e:'⚔️',c:['#d9381e','#ff7b5c','#f2c28f','#c9d3dd','#8a97a5','#e8e8f0'],x:'0.7-8.W 1.6-9.W 2.5-10.W 8-13.2.G 7.2.G 7.1-3.Y'},
+{k:'จอมเวทย์',e:'🔮',c:['#7b3fe4','#a77bff','#f6d2b0','#6a3fd0','#4b2a9c','#b98a4a'],x:'0.7-8.H 1.5-10.H 8-14.2.W 7.2.P 6-7.1-3.P'},
+{k:'นักธนู',e:'🏹',c:['#2f9e44','#6ed57f','#e8b88a','#4f8f3a','#3a6f2a','#a8652a'],x:'8-13.2.W 8.3.W 14.3.W 9-12.1.G'},
+{k:'นักบวช',e:'✨',c:['#fff4c2','#ffffff','#f6d2b0','#ffffff','#e0d6ff','#d4a22a'],x:'0.6-9.Y 8-14.2.W 7.1-3.Y 6.2.Y 8.2.Y'},
+{k:'นินจา',e:'🥷',c:['#2b2b4a','#4a4a7a','#f2c28f','#34345c','#22223a','#e8e8f0'],x:'4.4-11.R 7-8.4-11.K 12.2.G 11.1-3.G 13.2.G'},
+{k:'โจรสลัด',e:'🏴‍☠️',c:['#c43b3b','#ff7b7b','#dba67a','#2f4f8f','#223a6a','#c9d3dd'],x:'3.3-12.R 4.3-12.R 6.9.k 8-13.2.G 7.1-3.Y'},
+{k:'นักประดิษฐ์',e:'🔧',c:['#ff9a2e','#ffc46b','#f6d2b0','#ffffff','#cfd8e8','#9aa5b1'],x:'4.4-6.C 4.9-11.C 4.7-8.O 12.2.W 11.1-3.W 13.2.W'},
+{k:'นักดนตรี',e:'🎵',c:['#e0508f','#ff9fc8','#e8b88a','#3fa7d6','#2a7fa8','#ffd23f'],x:'1.4-9.H 0.5-10.H 8-13.2.W 7.1-3.Y 6.3.Y'}];
+CL.length=4;
+function spr(i,z=6){const k=CL[i],[H,h,S,B,b,W]=k.c,m={H,h,S,s:'#d9a273',B,b,W,o:'#2b1b3d',E:'#2b1b3d',P:'#ff9aa8',L:'#5b4a8a',G:'#d5dde6',Y:'#ffd23f',K:'#2b2b4a',C:'#5ee1ff',R:'#e83e4e',k:'#111',O:'#ff9a2e'};
+const g=BASE.map(r=>[...r]);const rg=s=>{const p=s.split('-').map(Number);return p.length>1?Array.from({length:p[1]-p[0]+1},(_,j)=>p[0]+j):p};
+k.x.split(' ').forEach(t=>{const[r,c,ch]=t.split('.');rg(r).forEach(y=>rg(c).forEach(x=>{if(g[y])g[y][x]=ch}))});
+const cv=document.createElement('canvas');cv.width=cv.height=16;const x=cv.getContext('2d');g.forEach((r,y)=>r.forEach((ch,xx)=>{if(m[ch]){x.fillStyle=m[ch];x.fillRect(xx,y,1,1)}}));
+return`<img class="px bob" width="${16*z}" height="${16*z}" src="${cv.toDataURL()}" alt="${k.k}">`}
+/* ---------- questions ---------- */
+const QS=[
+{t:'เช้าวันใหม่ของนักผจญภัย',e:'🏠🌅',s:'จงเรียงผังงานการเตรียมตัวไปโรงเรียน',r:[[['term','เริ่มต้น']],[['proc','ตื่นนอน']],[['proc','แปรงฟัน อาบน้ำ']],[['proc','แต่งตัวไปโรงเรียน']],[['term','สิ้นสุด']]]},
+{t:'เวทมนตร์บวกเลข',e:'🔢✨',s:'จงสร้างผังงานหาผลบวกของ a และ b',r:[[['term','เริ่มต้น']],[['io','รับค่า a, b']],[['proc','sum = a + b']],[['disp','แสดงผล sum']],[['term','สิ้นสุด']]]},
+{t:'สร้างปราสาท',e:'🏰📐',s:'จงสร้างผังงานหาพื้นที่สี่เหลี่ยมผืนผ้า',r:[[['term','เริ่มต้น']],[['io','รับค่า กว้าง, ยาว']],[['proc','พื้นที่ = กว้าง × ยาว']],[['disp','แสดงผลพื้นที่']],[['term','สิ้นสุด']]]},
+{t:'โรงเตี๊ยมนักเดินทาง',e:'🍜🔥',s:'จงสร้างผังงานการต้มบะหมี่กึ่งสำเร็จรูป',r:[[['term','เริ่มต้น']],[['proc','ต้มน้ำให้เดือด']],[['proc','ใส่เส้นบะหมี่']],[['disp','แสดง “บะหมี่พร้อมทาน”']],[['term','สิ้นสุด']]]},
+{t:'ฝนตกกลางป่า',e:'🌧️🌲',s:'ถ้าฝนตกให้กางร่ม ถ้าไม่ตกไม่ต้องกางร่ม (ทางเลือก)',r:[[['term','เริ่มต้น']],[['dec','ฝนตกหรือไม่ ?']],[['proc','กางร่ม','ใช่'],['proc','ไม่ต้องกางร่ม','ไม่ใช่']],[['term','สิ้นสุด']]]},
+{t:'ด่านตัดเกรด',e:'📜🧙',s:'รับคะแนน score ถ้า score ≥ 50 แสดงผล “ผ่าน” ไม่เช่นนั้นแสดง “ไม่ผ่าน”',r:[[['term','เริ่มต้น']],[['io','รับค่า score']],[['dec','score ≥ 50 ?']],[['disp','แสดง “ผ่าน”','ใช่'],['disp','แสดง “ไม่ผ่าน”','ไม่ใช่']],[['term','สิ้นสุด']]]},
+{t:'หินเลขคู่เลขคี่',e:'🪨🔢',s:'รับจำนวนเต็ม n ตรวจว่าเป็นเลขคู่หรือคี่ (n mod 2 = 0)',r:[[['term','เริ่มต้น']],[['io','รับค่า n']],[['dec','n mod 2 = 0 ?']],[['disp','แสดง “เลขคู่”','ใช่'],['disp','แสดง “เลขคี่”','ไม่ใช่']],[['term','สิ้นสุด']]]},
+{t:'ร้านค้าส่วนลด',e:'🏪💰',s:'รับยอดซื้อ ถ้ายอด ≥ 500 ลด 10% ไม่เช่นนั้นจ่ายเต็ม แล้วแสดงราคา',r:[[['term','เริ่มต้น']],[['io','รับค่า ยอดซื้อ']],[['dec','ยอดซื้อ ≥ 500 ?']],[['proc','ราคา = ยอด × 0.9','ใช่'],['proc','ราคา = ยอด','ไม่ใช่']],[['disp','แสดงผลราคา']],[['term','สิ้นสุด']]]}];
+/* ---------- state ---------- */
+let S={};
+const KEYS=['term','io','proc','dec','disp','conn'];
+/* ---------- screens ---------- */
+function title(){app.innerHTML=`<div class="box center"><h1>FLOWCHART QUEST</h1><div style="display:flex;justify-content:center;gap:8px;margin:14px">${[0,1,2,3].map(i=>spr(i,7)).join('')}</div><p>เกมการเรียนรู้ เรื่อง การออกแบบขั้นตอนวิธีด้วยผังงาน</p><button class="btn" onclick="fx.click();learn()">▶ เริ่มภารกิจ</button></div>`}
+function learn(){
+app.innerHTML=`<div class="box"><h2>ส่วนที่ 1 : คัมภีร์ผังงาน 📖</h2><p><b>ผังงาน (Flowchart)</b> คือ แผนภาพที่ใช้ <b>สัญลักษณ์</b> และ <b>ลูกศร</b> ในการแสดงลำดับขั้นตอนการทำงาน ช่วยให้มองเห็นวิธีการแก้ปัญหาอย่างชัดเจนทีละขั้นตอน ตรวจสอบง่าย และนำไปประยุกต์ใช้ในการเขียนโปรแกรม โดยการเขียนผังงานจะเริ่มที่ <b>จุดเริ่มต้น</b> และจบที่ <b>จุดสิ้นสุด</b> เสมอ</p>
+<p><h2>โครงสร้างการทำงาน</h2><b>1. แบบเรียงลำดับ (Sequence)</b> ทำทีละขั้นตามลำดับ &nbsp; <br> <b>2. แบบทางเลือก (Selection)</b> มีการตรวจเงื่อนไข แล้วเลือกเส้นทาง ใช่/ไม่ใช่</p><p class="center" style="color:var(--gold)">👆 แตะการ์ดเพื่อฟังเสียงเอฟเฟกต์</p>
+<div class="grid">${['term','proc','io','dec','disp','conn','arrow'].map(k=>`<div class="card" onclick="fx.click()"><svg viewBox="0 0 100 60" fill="#e6e9ff" stroke="#4a7de8" stroke-width="3">${SY[k].p}</svg><h3>${SY[k].n}</h3><b>${SY[k].th}</b><br><small>ใช้สำหรับ ${SY[k].f}</small>${(k=='conn'||k=='arrow')?'':SY[k].ex.split('  |  ').map((e,j)=>`<div class="ex"><small>ตัวอย่างที่ ${j+1}</small><br><b>${e}</b></div>`).join('')}</div>`).join('')}</div></div>
+<div class="center"><button class="btn" onclick="fx.click();reg()">ไปสร้างตัวละคร ▶</button></div>`;scrollTo(0,0)}
+function reg(){
+S={name:'',no:'',cls:'',av:-1};
+app.innerHTML=`<div class="box"><h2>ส่วนที่ 2 : สร้างตัวละคร 🛡️</h2><label>ชื่อ-นามสกุล</label><input type="text" id="nm" placeholder="เช่น สมชาย ใจดี"><div class="row"><div><label>เลขที่</label><input type="text" id="no" inputmode="numeric"></div><div><label>ชั้น</label><input type="text" id="cl" placeholder="เช่น 4/1"></div></div>
+<p><b>เลือกอาชีพ (Avatar)</b></p><div class="av">${CL.map((c,i)=>`<button onclick="pick(${i})" id="av${i}">${spr(i,5)}<br>${c.e} ${c.k}</button>`).join('')}</div>
+<div class="center"><button class="btn" onclick="go()">⚔ เข้าสู่เกม</button></div><p id="er" style="color:var(--bad)" class="center"></p></div>`}
+function pick(i){fx.click();S.av=i;document.querySelectorAll('.av button').forEach((b,j)=>b.classList.toggle('on',i==j))}
+function go(){const n=$('#nm').value.trim(),no=$('#no').value.trim(),c=$('#cl').value.trim();if(!n||!no||!c||S.av<0){fx.bad();$('#er').textContent='กรุณากรอกข้อมูลให้ครบ และเลือกอาชีพ';return}
+S.name=n;S.no=no;S.cls=c;S.ids=[...QS.keys()].sort(()=>Math.random()-.5).slice(0,5);S.i=0;S.res=[];S.wt={};S.tries=[];fx.ok();ques()}
+function ques(){
+const q=QS[S.ids[S.i]];S.q=q;S.flat=q.r.flat();S.f=[];S.sc=100;S.sel=null;S.mist=0;
+let n=0;const rows=q.r.map((r,ri)=>`${ri?'<div class="ar">▼</div>':''}<div class="fr">${r.map(c=>{const i=n++;return`<div class="cell"><div class="slot" data-i="${i}">${c[1]}</div>${c[2]?`<div class="cap">${c[2]}</div>`:''}</div>`}).join('')}</div>`).join('');
+app.innerHTML=`<div class="box hud"><div style="display:flex;align-items:center;gap:8px">${spr(S.av,4)}<div><b>${S.name}</b><br><small>${CL[S.av].k} • ข้อ ${S.i+1}/5</small></div></div><div style="flex:1;min-width:150px"><small>HP คะแนนข้อนี้: <b id="sc">100</b>/100</small><div class="bar"><i id="hp" style="width:100%"></i></div></div></div>
+<div class="box"><div class="stage"><div class="scene"><div class="big">${q.e}</div>${spr(S.av,6)}</div><div style="flex:3 1 280px"><h3>ด่านที่ ${S.i+1}: ${q.t}</h3><span class="cap">${q.r.some(r=>r.length>1)?'🔀 แบบทางเลือก (Selection)':'🟦 แบบเรียงลำดับ (Sequence)'}</span><p><b>โจทย์:</b> ${q.s}</p><small>ลากสัญลักษณ์ไปวางในช่องที่ตรงกับข้อความ (หรือแตะสัญลักษณ์แล้วแตะช่อง) • แตะช่องที่วางแล้วเพื่อเอาออก</small></div></div>
+<div class="flow">${rows}</div><div class="pal">${KEYS.map(k=>`<div class="pi" draggable="true" data-k="${k}">${sv(k)}<br>${SY[k].n}</div>`).join('')}</div>
+<div class="center"><button class="btn" id="ck" disabled onclick="check()">✔ ตรวจคำตอบ</button></div></div>`;
+bind();scrollTo(0,0)}
+function bind(){
+document.querySelectorAll('.pi').forEach(p=>{p.ondragstart=e=>{e.dataTransfer.setData('text',p.dataset.k);S.sel=p.dataset.k};p.onclick=()=>{fx.click();S.sel=p.dataset.k;document.querySelectorAll('.pi').forEach(x=>x.classList.toggle('on',x==p))}});
+document.querySelectorAll('.slot').forEach(s=>{const i=+s.dataset.i;
+s.ondragover=e=>{e.preventDefault();s.classList.add('over')};s.ondragleave=()=>s.classList.remove('over');
+s.ondrop=e=>{e.preventDefault();s.classList.remove('over');put(i,e.dataTransfer.getData('text'))};
+s.onclick=()=>{if(S.f[i]&&!S.sel){S.f[i]=null;fx.click();draw(i)}else if(S.sel)put(i,S.sel)}})}
+function put(i,k){if(!k)return;S.f[i]=k;fx.drop();draw(i);S.sel=null;document.querySelectorAll('.pi').forEach(x=>x.classList.remove('on'))}
+function draw(i){const s=document.querySelector(`.slot[data-i="${i}"]`),k=S.f[i];s.classList.remove('w');if(k){s.classList.add('f');s.innerHTML=sv(k)+`<span class="t">${S.flat[i][1]}</span>`}else{s.classList.remove('f');s.textContent=S.flat[i][1]}
+$('#ck').disabled=S.flat.some((_,j)=>!S.f[j])}
+function modal(h,b,cb,lbl='ตกลง'){const m=document.createElement('div');m.className='modal';m.innerHTML=`<div class="box"><h2>${h}</h2><div>${b}</div><button class="btn">${lbl}</button></div>`;document.body.appendChild(m);m.querySelector('button').onclick=()=>{m.remove();fx.click();cb&&cb()}}
+function check(){
+const bad=S.flat.map((c,i)=>S.f[i]!==c[0]?i:-1).filter(i=>i>=0);
+if(!bad.length){fx.ok();S.res.push(S.sc);S.tries.push(S.mist);modal('🎉 ถูกต้อง! ',`ได้ <b>${S.sc}</b> คะแนน${S.mist?` (พลาด ${S.mist} ครั้ง)`:' เต็มๆ!'}`,nextQ,S.i<4?'ไปข้อต่อไป ▶':'ดูสรุปผล ▶');return}
+bad.forEach(i=>{const k=S.flat[i][0];S.wt[k]=(S.wt[k]||0)+1;document.querySelector(`.slot[data-i="${i}"]`).classList.add('w')});
+S.mist++;S.sc=Math.max(0,S.sc-10);fx.bad();$('#sc').textContent=S.sc;$('#hp').style.width=S.sc+'%';
+const c=S.flat[bad[0]],hint=`💡 ลองดูช่อง “${c[1]}” อีกครั้ง — งานนี้คือ <b>${SY[c[0]].f}</b>`;
+if(S.sc<=0){S.res.push(0);S.tries.push(S.mist);modal('💀 คะแนนข้อนี้หมดแล้ว',`ข้ามไปข้อต่อไปนะ สู้ๆ!<br>${hint}`,nextQ,'ข้ามข้อ ▶')}
+else modal(`❌ ผิด ${bad.length} จุด (−10 คะแนน)`,`${hint}<br>เหลือ <b>${S.sc}</b> คะแนน • เริ่มวางใหม่อีกครั้ง!`,()=>{S.f=[];S.flat.forEach((_,j)=>draw(j))},'เริ่มใหม่ ↺')}
+function nextQ(){S.i++;S.i<5?ques():result()}
+function result(){
+fx.win();const tot=S.res.reduce((a,b)=>a+b,0),st=tot>=450?3:tot>=300?2:tot>=150?1:0;
+const pr=['ยังต้องฝึกอีกนิด แต่คุณกล้าลุยจนจบ เก่งมาก! 💪','ทำได้ดีเยี่ยม เริ่มเข้าใจหลักผังงานแล้ว 👍','เก่งมาก! คุณเป็นนักผังงานฝีมือดี 🌟','สุดยอด! ตำนานนักผังงานแห่งอาณาจักร 👑'][st];
+const wk=Object.entries(S.wt).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([k])=>`ทบทวนสัญลักษณ์ <b>${SY[k].n}</b> (${SY[k].f})`);
+const adv=[...wk];if(S.res.some((_,i)=>S.res[i]<100))adv.push('อ่านโจทย์ให้ละเอียด แล้วถามตัวเองว่า “ขั้นตอนนี้คือ รับค่า คำนวณ ตัดสินใจ หรือแสดงผล?”');adv.push('ครั้งหน้าลองฝึกวาดผังงานจากกิจวัตรประจำวันของตัวเองดูนะ');if(!wk.length)adv.unshift('ไม่มีจุดผิดเลย! ลองท้าทายด้วยผังงานแบบมีทางเลือกซ้อนกันหลายชั้น');
+app.innerHTML=`<div class="box center"><h2>ส่วนที่ 3 : สรุปผลภารกิจ 🏆</h2><div>${spr(S.av,9)}</div><div class="star">${'★'.repeat(st)}${'☆'.repeat(3-st)}</div>
+<p><b>${S.name}</b> • เลขที่ ${S.no} • ชั้น ${S.cls}<br>อาชีพ: ${CL[S.av].e} ${CL[S.av].k}</p><h1>${tot} / 500</h1>
+<table><tr><th>ด่าน</th><th>ชื่อด่าน</th><th>ผิดพลาด</th><th>คะแนน</th></tr>${S.res.map((r,i)=>`<tr><td>${i+1}</td><td>${QS[S.ids[i]].t}</td><td>${S.tries[i]}</td><td>${r}/100</td></tr>`).join('')}</table>
+<div class="box" style="text-align:left"><b>💬 คำชม:</b> ${pr}<br><br><b>📌 คำแนะนำครั้งต่อไป:</b><ul>${adv.map(a=>`<li>${a}</li>`).join('')}</ul></div>
+<button class="btn" onclick="dl()">📥 ดาวน์โหลดแบบประเมินผล (.png)</button><button class="btn" onclick="fx.click();S.ids=[...QS.keys()].sort(()=>Math.random()-.5).slice(0,5);S.i=0;S.res=[];S.wt={};S.tries=[];ques()">↺ เล่นอีกครั้ง (สุ่มโจทย์ใหม่)</button><button class="btn g" onclick="fx.click();title()">หน้าแรก</button></div>`;scrollTo(0,0)}
+async function dl(){fx.click();
+try{await Promise.all([document.fonts.load('700 60px Itim'),document.fonts.load('700 40px Mali')])}catch(e){}
+const W=1200,H=850,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d'),tot=S.res.reduce((a,b)=>a+b,0),ink='#3a2a63';
+const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#9fdcff');g.addColorStop(.7,'#d9c9ff');g.addColorStop(1,'#ffd9ec');x.fillStyle=g;x.fillRect(0,0,W,H);
+x.fillStyle='#fff';[[90,80],[930,60],[980,730],[70,740]].forEach(([a,b])=>{x.fillRect(a,b+24,96,24);x.fillRect(a+24,b,48,24);x.fillRect(a+72,b+12,48,36)});
+x.fillStyle=ink;x.fillRect(70,76,1070,730);x.fillStyle='#fffaf0';x.fillRect(82,88,1046,706);
+x.strokeStyle='#ffb800';x.lineWidth=8;x.strokeRect(104,110,992,662);x.strokeStyle='#ff8fb8';x.lineWidth=4;x.strokeRect(120,126,960,630);
+x.fillStyle='#ffb800';[[96,102],[1076,102],[96,752],[1076,752]].forEach(([a,b])=>{x.fillRect(a,b,28,28);x.fillStyle=ink;x.fillRect(a+8,b+8,12,12);x.fillStyle='#ffb800'});
+x.textAlign='center';x.textBaseline='middle';x.font='700 38px Mali,sans-serif';x.fillStyle='#ffb800';x.fillText('★  ★  ★',W/2,180);
+x.font='700 84px Itim,Mali,sans-serif';x.fillStyle=ink;x.fillText('FLOWCHART QUEST',W/2+5,265);x.fillStyle='#ff5c9e';x.fillText('FLOWCHART QUEST',W/2,260);
+x.fillStyle='#6a4cff';x.font='700 46px Itim,Mali,sans-serif';x.fillText('แบบประเมินผล',W/2,335);
+x.fillStyle='#ffd9ec';x.fillRect(220,380,760,110);x.strokeStyle=ink;x.lineWidth=6;x.strokeRect(220,380,760,110);
+let fs=64;do{x.font=`700 ${fs}px Itim,Mali,sans-serif`;fs-=2}while(x.measureText(S.name).width>700&&fs>24);x.fillStyle=ink;x.fillText(S.name,W/2,436);
+x.font='700 44px Mali,sans-serif';x.fillText(`ชั้น ${S.cls}      เลขที่ ${S.no}`,W/2,550);
+x.fillStyle=ink;x.fillRect(330,600,540,150);x.fillStyle='#fff0a8';x.fillRect(338,608,524,134);
+x.fillStyle=ink;x.font='700 32px Mali,sans-serif';x.fillText('คะแนนที่ได้รับ',W/2,634);x.fillStyle='#ff5c9e';x.font='700 76px Itim,Mali,sans-serif';x.fillText(`${tot} / 500`,W/2,692);
+try{const b=await new Promise(r=>c.toBlob(r,'image/png'));const d=await claude.use('downloads');if(!d){modal('ดาวน์โหลดไม่ได้','หน้านี้ยังไม่รองรับการดาวน์โหลด ลองแคปหน้าจอแทนนะ');return}
+await d.save({filename:`แบบประเมินผล_${S.name}_${S.cls.replace(/[\/\\]/g,'-')}_เลขที่${S.no}.png`,data:b});fx.ok()}
+catch(e){if(e&&e.code!=='declined')modal('ดาวน์โหลดไม่สำเร็จ','ลองใหม่อีกครั้ง หรือแคปหน้าจอแทน')}}
+title();
+</script></body></html>
